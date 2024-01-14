@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "972507236381",
+    "project_id": "doctors-appointment-28",
+    "storage_bucket": "doctors-appointment-28.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:972507236381:android:8a7aee8ed33b74a2b55ef4",
+        "android_client_info": {
+          "package_name": "com.irakuharry.doctors_appointment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEz-4noWZ9cfCR3HL595lHw2eOSO2hc-k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
