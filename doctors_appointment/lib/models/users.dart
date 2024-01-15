@@ -268,9 +268,11 @@ class UserService {
     }).toList();
   }
 
-  Future<UserModel> getUser() async {
-    QuerySnapshot querySnapshot = await usersCollection.where('id', isEqualTo: _auth.currentUser!.uid).get();
-    return querySnapshot.docs.map((e) => UserModel.fromJson(e.data() as Map<String, dynamic>)).toList()[0];
+  Future<UserModel?> getUser() async {
+    QuerySnapshot querySnapshot = await usersCollection.where('id', isEqualTo: _auth.currentUser?.uid).get();
+    List<UserModel> x = querySnapshot.docs.map((e) => UserModel.fromJson(e.data() as Map<String, dynamic>)).toList();
+    if (x.length == 0) return null;
+    else return x.first;
   }
 
   Future<UserModel> getUserByEmail(String email) async {

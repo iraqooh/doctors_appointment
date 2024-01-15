@@ -1,11 +1,13 @@
 import 'package:doctors_appointment/constants/strings.dart';
-import 'package:doctors_appointment/pages/home_page.dart';
+import 'package:doctors_appointment/models/users.dart';
 import 'package:doctors_appointment/pages/onboarding_screen.dart';
+import 'package:doctors_appointment/pages/root_page.dart';
 import 'package:doctors_appointment/utilities/providers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,6 +17,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  UserModel? currentUser;
   @override
   void initState() {
     super.initState();
@@ -22,15 +25,18 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> initialize() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    UserModel? currentUser = await UserService().getUser();
     Future.delayed(
       const Duration(seconds: 3),
       () {
-        User? user = FirebaseAuth.instance.currentUser;
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => user == null ?
             const OnboardingScreen() :
-            const HomePage()),
-            (route) => false);
+            RootPage(isDoctor: prefs.getBool('isDoctor') != null ? prefs.getBool('isDoctor')! : false, currentUser: currentUser!)),
+                (route) => false
+        );
       }
     );
   }

@@ -11,8 +11,10 @@ import 'doctor_home_page.dart';
 
 class RootPage extends StatefulWidget {
   int selectedIndex;
+  bool? isDoctor;
   final UserModel currentUser;
-  RootPage({super.key, this.selectedIndex = 0, required this.currentUser});
+  RootPage({super.key, this.selectedIndex = 0, this.isDoctor,
+  required this.currentUser});
 
   @override
   State<RootPage> createState() => _RootPageState();

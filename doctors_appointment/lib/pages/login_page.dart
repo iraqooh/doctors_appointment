@@ -1,13 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctors_appointment/components/widgets.dart';
 import 'package:doctors_appointment/constants/strings.dart';
 import 'package:doctors_appointment/models/users.dart';
-import 'package:doctors_appointment/pages/home_page.dart';
 import 'package:doctors_appointment/pages/root_page.dart';
 import 'package:doctors_appointment/pages/signup_page.dart';
 import 'package:doctors_appointment/utilities/providers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -85,7 +82,9 @@ class _LoginPageState extends State<LoginPage> {
                   isConnecting = true;
                 });
                 User? user = await UserService().login(email, password);
-                UserModel currentUser = await UserService().getUser();
+                UserModel? currentUser = await UserService().getUser();
+                final prefs = await SharedPreferences.getInstance();
+                if (currentUser != null) prefs.setBool('isDoctor', currentUser.isDoctor!);
                 setState(() {
                   isConnecting = false;
                 });
@@ -94,7 +93,9 @@ class _LoginPageState extends State<LoginPage> {
                   return;
                 }
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => RootPage(currentUser: currentUser))
+                  MaterialPageRoute(builder: (context) =>
+                      RootPage(currentUser: currentUser!, isDoctor: currentUser.isDoctor)
+                  )
                 );
               },
               child: isConnecting ? progressIndicator() : Text('Login'),
@@ -106,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                 // Navigate to the sign-up page
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SignUpPage()),
+                  MaterialPageRoute(builder: (context) => SignupPage()),
                 );
               },
               child: Text("Don't have an account? Sign up"),

@@ -108,16 +108,11 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                   FirebaseAuth.instance.currentUser!.email!
                 ),
                 builder: (BuildContext context, AsyncSnapshot<List<AppointmentModel>> snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: text('You have no appointments!', color: Colors.grey, size: 16, weight: FontWeight.bold),
-                    );
-                  }
-                  else if (snapshot.connectionState == ConnectionState.active ||
+                  if (snapshot.connectionState == ConnectionState.active ||
                       snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: progressIndicator());
                   }
-                  else {
+                  else if (snapshot.hasData) {
                     var appointments = snapshot.data;
                     return Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -236,6 +231,14 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                         },
                       ),
                     );
+                  }
+                  else if (!snapshot.hasData) {
+                    return Center(
+                      child: text('You have no appointments!', color: Colors.grey, size: 16, weight: FontWeight.bold),
+                    );
+                  }
+                  else {
+                    return Center(child: text('An unknown error occurred!', color: Colors.grey, size: 16, weight: FontWeight.bold));
                   }
                 },
               ),

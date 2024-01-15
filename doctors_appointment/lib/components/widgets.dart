@@ -75,9 +75,9 @@ Text text(
 }
 
 Widget futureUser() {
-  return FutureBuilder<UserModel>(
+  return FutureBuilder<UserModel?>(
     future: UserService().getUser(),
-    builder: (context, AsyncSnapshot<UserModel> snapshot) {
+    builder: (context, AsyncSnapshot<UserModel?> snapshot) {
       if (!snapshot.hasData) {
         return Text('Welcome');
       }
@@ -101,9 +101,9 @@ Widget futureUser() {
 }
 
 Widget futureUserSidebar() {
-  return FutureBuilder<UserModel>(
+  return FutureBuilder<UserModel?>(
     future: UserService().getUser(),
-    builder: (context, AsyncSnapshot<UserModel> snapshot) {
+    builder: (context, AsyncSnapshot<UserModel?> snapshot) {
       if (!snapshot.hasData) {
         return Text('Doctor\'s Appointment');
       }
@@ -522,9 +522,9 @@ Widget futureSlots(UserModel doctor, String date) {
 }
 
 Widget futurePhone() {
-  return FutureBuilder<UserModel>(
+  return FutureBuilder<UserModel?>(
       future: UserService().getUser(),
-      builder: (context, AsyncSnapshot<UserModel> snapshot) {
+      builder: (context, AsyncSnapshot<UserModel?> snapshot) {
         if (snapshot.hasData) {
           inputControllers['phone']!.text = snapshot.data!.phone!;
           return TextFormField(
@@ -797,9 +797,9 @@ Widget futureDoctorsNearYou() {
 }
 
 Widget futureDone() {
-  return FutureBuilder<UserModel>(
+  return FutureBuilder<UserModel?>(
     future: UserService().getUser(),
-    builder: (context, AsyncSnapshot<UserModel> snapshot) {
+    builder: (context, AsyncSnapshot<UserModel?> snapshot) {
       if (!snapshot.hasData) {
         return Text('Welcome');
       }
@@ -982,9 +982,9 @@ Widget futureUpcomingAppointments() {
 }
 
 Widget futureDrawerAccount() {
-  return FutureBuilder<UserModel>(
+  return FutureBuilder<UserModel?>(
       future: UserService().getUser(),
-      builder: (context, AsyncSnapshot<UserModel> snapshot) {
+      builder: (context, AsyncSnapshot<UserModel?> snapshot) {
         if (snapshot.connectionState == ConnectionState.active ||
             snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: progressIndicator());

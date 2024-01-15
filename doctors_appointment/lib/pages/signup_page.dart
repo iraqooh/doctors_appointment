@@ -13,14 +13,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:flutter_holo_date_picker/widget/date_picker_widget.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class SignUpPage extends StatefulWidget {
+class SignupPage extends StatefulWidget {
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _SignupPageState createState() => _SignupPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignupPageState extends State<SignupPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final PageController _pageController = PageController();
 
@@ -245,6 +246,8 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future<void> _showSignUpDialog() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!context.mounted) return;
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -256,7 +259,9 @@ class _SignUpPageState extends State<SignUpPage> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    _isDoctor = false; // User selected Patient
+                    _isDoctor = false;
+                    prefs.setBool('isDoctor', _isDoctor);
+                    // User selected Patient
                   });
                   Navigator.of(context).pop();
                   showSetupPageView();
@@ -268,6 +273,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 onPressed: () {
                   setState(() {
                     _isDoctor = true; // User selected Doctor
+                    prefs.setBool('isDoctor', _isDoctor);
                   });
                   Navigator.of(context).pop();
                   showSetupPageView();

@@ -410,7 +410,7 @@ class _DoctorProfileState extends State<DoctorDetail> {
     );
   }
 
-  Widget futureReviews(bool limited) {
+  Widget futureReviews(bool viewMoreReviews) {
     return FutureBuilder<List<ReviewModel>>(
       future: ReviewService().getReviewsForDoctor(widget.doctor.email!),
       builder: (context, AsyncSnapshot<List<ReviewModel>> snapshot) {
@@ -425,70 +425,197 @@ class _DoctorProfileState extends State<DoctorDetail> {
           return Center(child: progressIndicator());
         }
         else if (snapshot.hasData) {
-          List<ReviewModel>? reviews;
-          if (limited) {
-            reviews = snapshot.data!.take(2).toList();
+          List<ReviewModel>? allReviews, limitedReviews;
+          if (viewMoreReviews) {
+            limitedReviews = snapshot.data!.take(2).toList();
           } else {
-            reviews = reviews = snapshot!.data;
+            allReviews = snapshot!.data;
           }
-          return SizedBox(
-            height: reviews!.length * 180,
-            child: ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                var review = reviews![index];
-                return Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+          return viewMoreReviews ? SizedBox(
+            height: allReviews!.length * 180,
+            child: Column(
+              children: [
+                ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    var review = allReviews![index];
+                    return Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CircleAvatar(
-                            backgroundImage: AssetImage(
-                                noImage
-                            ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CircleAvatar(
+                                backgroundImage: AssetImage(
+                                    noImage
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      review.patientName,
+                                      style: TextStyle(
+                                          color: blueTheme,
+                                          fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                    VxRating(
+                                      selectionColor: warning,
+                                      onRatingUpdate: (value) {},
+                                      maxRating: 5,
+                                      count: 5,
+                                      value: double.parse(review.rating.toString()),
+                                      stepInt: true,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
+                          8.heightBox,
+                          text(review.title!, color: dark, weight: FontWeight.bold),
+                          8.heightBox,
+                          text(review.message!),
+                          8.heightBox,
+                          text(review.submitDate!, color: dark.withOpacity(0.5), size: 12),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      viewMoreReviews = !viewMoreReviews;
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    color: light,
+                    child: Row(
+                      children: [
+                        const Text(
+                          'Less Reviews',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: blueTheme
+                          ),
+                        ),
+                        const Spacer(),
+                        Icon(
+                          Icons.expand_more,
+                          color: Colors.grey[500],
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            )
+          ) :
+          SizedBox(
+              height: limitedReviews!.length * 180,
+              child: !viewMoreReviews ? Column(
+                children: [
+                  ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      var review = limitedReviews![index];
+                      return Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  review.patientName,
-                                  style: TextStyle(
-                                      color: blueTheme,
-                                      fontWeight: FontWeight.bold
+                                CircleAvatar(
+                                  backgroundImage: AssetImage(
+                                      noImage
                                   ),
                                 ),
-                                VxRating(
-                                  selectionColor: warning,
-                                  onRatingUpdate: (value) {},
-                                  maxRating: 5,
-                                  count: 5,
-                                  value: double.parse(review.rating.toString()),
-                                  stepInt: true,
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        review.patientName,
+                                        style: TextStyle(
+                                            color: blueTheme,
+                                            fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+                                      VxRating(
+                                        selectionColor: warning,
+                                        onRatingUpdate: (value) {},
+                                        maxRating: 5,
+                                        count: 5,
+                                        value: double.parse(review.rating.toString()),
+                                        stepInt: true,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
+                            8.heightBox,
+                            text(review.title!, color: dark, weight: FontWeight.bold),
+                            8.heightBox,
+                            text(review.message!),
+                            8.heightBox,
+                            text(review.submitDate!, color: dark.withOpacity(0.5), size: 12),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        viewMoreReviews = !viewMoreReviews;
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      color: light,
+                      child: Row(
+                        children: [
+                          const Text(
+                            'More Reviews',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: blueTheme
+                            ),
+                          ),
+                          const Spacer(),
+                          Icon(
+                            Icons.expand_more,
+                            color: Colors.grey[500],
                           ),
                         ],
                       ),
-                      8.heightBox,
-                      text(review.title!, color: dark, weight: FontWeight.bold),
-                      8.heightBox,
-                      text(review.message!),
-                      8.heightBox,
-                      text(review.submitDate!, color: dark.withOpacity(0.5), size: 12),
-                    ],
-                  ),
-                );
-              },
-            ),
+                    ),
+                  )
+                ],
+              ) : Column(
+                children: [
+
+                ],
+              )
           );
         }
         else {

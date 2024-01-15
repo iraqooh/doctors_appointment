@@ -1,6 +1,8 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doctors_appointment/models/users.dart';
 import 'package:doctors_appointment/pages/login_page.dart';
+import 'package:doctors_appointment/pages/root_page.dart';
 import 'package:doctors_appointment/pages/splash_screen.dart';
 import 'package:doctors_appointment/pages/template.dart';
 import 'package:doctors_appointment/utilities/providers.dart';
@@ -46,6 +48,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -57,9 +60,12 @@ class MyApp extends StatelessWidget {
       builder: (context, widget) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
+          title: 'Doctor+',
           theme: Provider.of<ThemeProvider>(context).currentThemeData,
-          home: SplashScreen(),
+          initialRoute: '/',
+          routes: {
+            '/' : (context) => SplashScreen()
+          },
         );
       },
     );
