@@ -30,6 +30,33 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final emailNode = FocusNode();
+    final passwordNode = FocusNode();
+
+    Future<void> login() async {
+      String email = inputControllers['email']!.text;
+      String password = inputControllers['password']!.text;
+      print(email + ' ' + password);
+      setState(() {
+        isConnecting = true;
+      });
+      User? user = await UserService().login(email, password);
+      UserModel? currentUser = await UserService().getUser();
+      final prefs = await SharedPreferences.getInstance();
+      if (currentUser != null) prefs.setBool('isDoctor', currentUser.isDoctor!);
+      setState(() {
+        isConnecting = false;
+      });
+      if (user == null) {
+        Util.toast('Error logging in!');
+        return;
+      }
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) =>
+              RootPage(currentUser: currentUser!, isDoctor: currentUser.isDoctor)
+          )
+      );
+    }
 
     return Scaffold(
       body: Padding(
@@ -44,8 +71,23 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 20),
             // Email TextField
-            TextField(
+            TextFormField(
               controller: inputControllers['email'],
+              focusNode: emailNode,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter your email';
+                } else if (!RegExp(
+                    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+                    .hasMatch(value)) {
+                  return 'Enter a valid email address';
+                }
+                return null;
+              },
+              onEditingComplete: () {
+                emailNode.nextFocus();
+              },
               decoration: InputDecoration(
                 labelText: 'Email',
                 icon: Icon(Icons.email),
@@ -53,9 +95,13 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 20),
             // Password TextField
-            TextField(
+            TextFormField(
               controller: inputControllers['password'],
+              focusNode: passwordNode,
               obscureText: obscured,
+              onEditingComplete: () {
+                login();
+              },
               decoration: InputDecoration(
                 labelText: 'Password',
                 icon: Icon(Icons.lock),
@@ -74,29 +120,8 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 20),
             // Login Button
             ElevatedButton(
-              onPressed: () async {
-                String email = inputControllers['email']!.text;
-                String password = inputControllers['password']!.text;
-                print(email + ' ' + password);
-                setState(() {
-                  isConnecting = true;
-                });
-                User? user = await UserService().login(email, password);
-                UserModel? currentUser = await UserService().getUser();
-                final prefs = await SharedPreferences.getInstance();
-                if (currentUser != null) prefs.setBool('isDoctor', currentUser.isDoctor!);
-                setState(() {
-                  isConnecting = false;
-                });
-                if (user == null) {
-                  Util.toast('Error logging in!');
-                  return;
-                }
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) =>
-                      RootPage(currentUser: currentUser!, isDoctor: currentUser.isDoctor)
-                  )
-                );
+              onPressed: () {
+                login();
               },
               child: isConnecting ? progressIndicator() : Text('Login'),
             ),

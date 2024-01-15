@@ -1,6 +1,7 @@
 import 'package:doctors_appointment/constants/colors.dart';
 import 'package:doctors_appointment/constants/strings.dart';
 import 'package:doctors_appointment/pages/login_page.dart';
+import 'package:doctors_appointment/pages/password_change_page.dart';
 import 'package:doctors_appointment/pages/settings_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +60,7 @@ class Sidebar extends StatelessWidget {
                 )
             ),
             onTap: () {
-
+              navigateTo(context, const PasswordChangePage());
             },
           ),
           ListTile(
