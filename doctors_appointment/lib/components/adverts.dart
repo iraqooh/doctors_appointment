@@ -37,7 +37,7 @@ class AdvertCard extends StatelessWidget {
         ) :
         const Center(
           child: Text(
-            'Your Advert Content',
+            '',
             style: TextStyle(
               color: Colors.yellow,
               fontSize: 16.0,
@@ -68,6 +68,10 @@ class HorizontalAdvertCardList extends StatelessWidget {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: const [
+          AdvertCard(url: '', imageAsset: 'assets/images/save_time.jpg'),
+          AdvertCard(url: '', imageAsset: 'assets/images/features.png'),
+          AdvertCard(url: '', imageAsset: 'assets/images/specialistsAd.png'),
+          AdvertCard(url: '', imageAsset: 'assets/images/premium_health.jpg'),
           AdvertCard(url: '', imageUrl: 'https://miro.medium.com/v2/resize:fit:828/format:webp/0*wyD07LhN9BXLtoGl'),
           AdvertCard(url: '', imageUrl: 'https://miro.medium.com/v2/resize:fit:828/format:webp/0*BUoDCSwYNKROMgWU'),
           AdvertCard(url: '', imageUrl: 'https://miro.medium.com/v2/resize:fit:828/format:webp/0*yRW7z7HYpj5yezkO'),
